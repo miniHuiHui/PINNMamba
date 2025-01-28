@@ -1,0 +1,9 @@
+matplotlib
+tqdm
+einops
+deepxde
+scipy
+scikit-learn
+pykan
+sympy
+torch==2.1.1
