@@ -256,41 +256,6 @@ class EncoderLayer(nn.Module):
         
 
         return x
-''' 
-
-class EncoderLayer(nn.Module):
-    def __init__(self, d_model, heads, dt_rank=32, dim_inner=None, d_state=None):
-        super().__init__()
-        #self.attn = nn.MultiheadAttention(embed_dim=d_model, num_heads=heads, batch_first=True)
-        self.ssm = SSM(d_model, dt_rank, dim_inner, d_state)
-        self.ff = FeedForward(d_model)
-        self.act1 = WaveAct()
-        self.act2 = WaveAct()
-        self.z_proj = nn.Linear(d_model, d_model)
-        self.conv1d = nn.Conv1d(d_model, d_model, 1)
-        self.softplus = nn.Softplus()
-        self.layernorm = nn.LayerNorm(d_model)
-
-    def forward(self, x):
-        skip = x
-        x = self.layernorm(x)
-        x = self.act1(x)
-        
-        z = self.z_proj(x)
-
-        x = rearrange(x, "b s d -> b d s")
-        x = self.softplus(self.conv1d(x))
-        x = rearrange(x, "b d s -> b s d")
-        #x = self.layernorm(x)
-        x = self.ssm(x)
-
-        x = x * z
-        x = skip + x
-        x2 = self.act2(x)
-        x = x + self.ff(x2)
-
-        return x  
-'''
 
 class FeedForward(nn.Module):
     def __init__(self, d_model, d_ff=256):
@@ -321,49 +286,7 @@ class Encoder(nn.Module):
             
         return self.act(x)
     
-class Decoder(nn.Module):
-    def __init__(self, d_model, N, heads):
-        super(Decoder, self).__init__()
-        self.N = N
-        self.layers = get_clones(DecoderLayer(d_model, heads), N)
-        self.act = WaveAct()
-        
-    def forward(self, x, e_outputs):
-        for i in range(self.N):
-            x = self.layers[i](x, e_outputs)
-        return self.act(x)
-    
-class DecoderLayer(nn.Module):
-    def __init__(self, d_model, heads):
-        super(DecoderLayer, self).__init__()
 
-        self.attn = nn.MultiheadAttention(embed_dim=d_model, num_heads=heads, batch_first=True)
-        self.ff = FeedForward(d_model)
-        self.act1 = WaveAct()
-        self.act2 = WaveAct()
-        
-
-    def forward(self, x, e_outputs): 
-        x2 = self.act1(x)
-        x = x + self.attn(x2, e_outputs, e_outputs)[0]
-        x2 = self.act2(x)
-        x = x + self.ff(x2)
-        return x
-'''
-class PINNMamba(nn.Module):
-    def __init__(self, d_out, d_model, d_hidden, N, heads):
-        super().__init__()
-        self.linear_emb = nn.Linear(2, d_model)
-        self.encoder = Encoder(d_model, N, heads)
-        #self.decoder = Decoder(d_model, N, heads)
-        self.linear_out = nn.Sequential(
-            nn.Linear(d_model, d_hidden),
-            WaveAct(),
-            nn.Linear(d_hidden, d_hidden),
-            WaveAct(),
-            nn.Linear(d_hidden, d_out)
-        )
-'''
 
 
 class Model(nn.Module):
