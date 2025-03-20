@@ -11,6 +11,7 @@ from model_dict import get_model
 
 #torch.set_float32_matmul_precision('high')
 torch.backends.cuda.matmul.allow_tf32 = False
+torch.backends.cudnn.allow_tf32 = False
 
 seed = 0
 np.random.seed(seed)
