@@ -23,11 +23,11 @@ https://github.com/AdityaLab/pinnsformer
 
 https://github.com/thuml/RoPINN
 
-‘’‘
+```
 @article{xu2025sub,
   title={Sub-Sequential Physics-Informed Learning with State Space Model},
   author={Xu, Chenhui and Liu, Dancheng and Hu, Yuting and Li, Jiajie and Qin, Ruiyang and Zheng, Qingxiao and Xiong, Jinjun},
   journal={in International Conference on Machine Learning},
   year={2025}
 }
-’‘’
+```
